@@ -1,3 +1,5 @@
+# script pushes code to github
+
 TOKEN_FILE="../hash.txt"
 USERNAME="omr50"
 
