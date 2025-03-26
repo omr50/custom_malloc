@@ -18,7 +18,7 @@ Block* create_block(size_t size);
 
 // using the memory address returned 
 // to the user get the block pointer
-void* get_block_pointer(void* address);
+Block* get_block_pointer(void* address);
 
 // finds a free block with at least size bytes
 Block* find_free_block(size_t size);
