@@ -61,8 +61,22 @@ void malloc(size_t size) {
 	if (!block) {
 		block = create_block(size);
 	}
+	if (block == (void*) -1) {
+		// can't allocate memory
+		return NULL;
+	}
 
+	// at this point we should have memory
+	block->free = false;
+	// increment pointer to skip metadata
+	return block+1;
+}
 
-	
-	
+void* realloc(void* pointer, size_t size) {
+	if (pointer->size >= size)
+		return pointer;
+
+	void* new_ptr = malloc(size);
+	free(pointer);
+	return new_ptr;
 }

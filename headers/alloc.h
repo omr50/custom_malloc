@@ -24,6 +24,7 @@ Block* get_block_pointer(void* address);
 Block* find_free_block(size_t size);
 
 void* malloc(size_t size);
+void* free(void* pointer);
 
 // reallocates based on new size, can grow or de-size
 // (block splitting functionality can be implemented later)
