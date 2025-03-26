@@ -8,6 +8,12 @@
 
 // check the size 
 Block* create_block(size_t size) {
+	Block* block;
+	// is it not thread safe because
+	// by the time we allocate, the 
+	// program break could have moved due
+	// to another function in another thread
+	// requesting memory?
 	if (size <= 0)
 		return null;
 	Block* block = sbrk(0);
@@ -57,13 +63,15 @@ void malloc(size_t size) {
 
 	if (block_list) {
 		block_list = find_free_block(size);
-	}
-	if (!block) {
+		if (!block) {
+			return NULL;
+		}
+	} else {
 		block = create_block(size);
-	}
-	if (block == (void*) -1) {
-		// can't allocate memory
-		return NULL;
+		if (!block) {
+			// can't allocate memory
+			return NULL;
+		}
 	}
 
 	// at this point we should have memory
@@ -73,15 +81,32 @@ void malloc(size_t size) {
 }
 
 void* free(void* address) {
+	if (!address) {
+		return;
+	}
 	Block* block = get_block_pointer(address);
 	block->free = true;
 }
 
 void* realloc(void* pointer, size_t size) {
-	if (pointer->size >= size)
+	if (!pointer) {
+		return malloc(size);
+	}
+	Block* block = get_block_ptr(pointer);
+	if (block->size >= size)
 		return pointer;
 
 	void* new_ptr = malloc(size);
+	if (!new_ptr) {
+		return NULL;
+	}
+	memcpy(new_ptr, ptr, block->size);
 	free(pointer);
 	return new_ptr;
+}
+
+void* calloc(size_t nelem, size_t elsize) {
+	void* pointer = malloc(nelem * elsize);	
+	memset(pointer, 0, size);
+	return pointer;
 }
