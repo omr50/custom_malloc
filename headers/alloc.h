@@ -28,7 +28,7 @@ void* free(void* pointer);
 
 // reallocates based on new size, can grow or de-size
 // (block splitting functionality can be implemented later)
-void* realloc(void* pointer, size_t size);
+void* realloc(void* address, size_t size);
 // number of nelem = number of elements, elsize = size of each
 void* calloc(size_t nelem, size_t elsize);
 

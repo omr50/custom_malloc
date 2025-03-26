@@ -72,6 +72,11 @@ void malloc(size_t size) {
 	return block+1;
 }
 
+void* free(void* address) {
+	Block* block = get_block_pointer(address);
+	block->free = true;
+}
+
 void* realloc(void* pointer, size_t size) {
 	if (pointer->size >= size)
 		return pointer;
