@@ -1,4 +1,6 @@
 #!/bin/bash
 
+gcc -Iheaders src/main.c src/alloc.c -o main
 
-compile here (include headers *forgot how*)
+echo "finished compiling"
+

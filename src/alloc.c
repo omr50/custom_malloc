@@ -2,20 +2,22 @@
 // #include <stdlib.h> (this includes malloc)
 #include <unistd.h>
 #include <sys/mman.h>
+#include <string.h>
 #include "../headers/alloc.h"
 
 
+Block* block_list = NULL;
+Block* end_of_list = NULL;
 
 // check the size 
 Block* create_block(size_t size) {
-	Block* block;
 	// is it not thread safe because
 	// by the time we allocate, the 
 	// program break could have moved due
 	// to another function in another thread
 	// requesting memory?
 	if (size <= 0)
-		return null;
+		return NULL;
 	Block* block = sbrk(0);
 	void* data = sbrk(size + sizeof(Block));	
 	if (data == (void*)-1) 
@@ -24,21 +26,21 @@ Block* create_block(size_t size) {
 	// add block to the back of the list
 	
 	// fill out block fields
-	block.size = size;
-	block.free = true;
-	block.next = nullptr;
+	block->size = size;
+	block->free = true;
+	block->next = NULL;
 
 	if (!block_list){
 		block_list = block;
 		end_of_list = block;
 	} else {
-		end_of_list.next = block;
-		end_of_list = end_of_list.next;
+		end_of_list->next = block;
+		end_of_list = end_of_list->next;
 	}
 	return block;
 }
 
-Block* get_block_pointer(void* address) {
+Block* get_block_ptr(void* address) {
 	return (Block*)address -1;
 }
 
@@ -53,16 +55,16 @@ Block* find_free_block(size_t size) {
 	return ptr;
 }
 
-void malloc(size_t size) {
+void* custom_malloc(size_t size) {
 
 	if (size <= 0) {
 		return NULL;
 	}
 	
-	Block* block = nullptr;
+	Block* block = NULL;
 
 	if (block_list) {
-		block_list = find_free_block(size);
+		block = find_free_block(size);
 		if (!block) {
 			return NULL;
 		}
@@ -80,33 +82,34 @@ void malloc(size_t size) {
 	return block+1;
 }
 
-void* free(void* address) {
+void* custom_free(void* address) {
 	if (!address) {
 		return;
 	}
-	Block* block = get_block_pointer(address);
+	Block* block = get_block_ptr(address);
 	block->free = true;
 }
 
-void* realloc(void* pointer, size_t size) {
+void* custom_realloc(void* pointer, size_t size) {
 	if (!pointer) {
-		return malloc(size);
+		return custom_malloc(size);
 	}
 	Block* block = get_block_ptr(pointer);
 	if (block->size >= size)
 		return pointer;
 
-	void* new_ptr = malloc(size);
+	void* new_ptr = custom_malloc(size);
 	if (!new_ptr) {
 		return NULL;
 	}
-	memcpy(new_ptr, ptr, block->size);
-	free(pointer);
+	memcpy(new_ptr, pointer, block->size);
+	custom_free(pointer);
 	return new_ptr;
 }
 
-void* calloc(size_t nelem, size_t elsize) {
-	void* pointer = malloc(nelem * elsize);	
+void* custom_calloc(size_t nelem, size_t elsize) {
+	size_t size = nelem * elsize;
+	void* pointer = custom_malloc(size);	
 	memset(pointer, 0, size);
 	return pointer;
 }
