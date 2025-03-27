@@ -41,7 +41,7 @@ Block* create_block(size_t size) {
 }
 
 Block* get_block_ptr(void* address) {
-	return (Block*)address -1;
+	return (Block*)address - 1;
 }
 
 Block* find_free_block(size_t size) {
@@ -113,7 +113,7 @@ void* custom_calloc(size_t nelem, size_t elsize) {
 	return pointer;
 }
 
-
+// prints block list to check if properly working
 void print_block_list() {
 	Block* block = block_list;
 	while (block) {
@@ -122,6 +122,12 @@ void print_block_list() {
 		printf("size: %d\n", block->size);
 		printf("next: %p\n", block->next);
 		printf("free: %s\n", (block->free ? "true" : "false"));
+		printf("\n");
 		block = block->next;
 	}
+
+		printf("\n");
+		printf("\n");
+		printf("--------------------------------------\n");
 }
+

@@ -44,4 +44,15 @@ int main() {
 	printf("got to this point?\n");
 
 	print_block_list();
+	
+	custom_free((void*)array1);
+	print_block_list();
+	custom_free((void*)array2);
+	print_block_list();
+
+	int* array3 = create_array_range(200, 300);	
+	print_block_list();
+	custom_free(array3);
+	print_block_list();
+
 }
