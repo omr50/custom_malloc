@@ -6,6 +6,8 @@
 #include <sys/mman.h>
 #include <stdbool.h>
 
+// struct to hold the block
+// info. Will be a linked list
 typedef struct {
 	size_t size;
 	struct Block* next;
@@ -13,6 +15,7 @@ typedef struct {
 } Block;
 
 
+// start and end of the block list
 extern Block* block_list;
 extern Block* end_of_list;
 
