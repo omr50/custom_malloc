@@ -18,14 +18,14 @@ Block* create_block(size_t size) {
 	// requesting memory?
 	if (size <= 0)
 		return NULL;
-	Block* block = sbrk(0);
+
 	void* data = sbrk(size + sizeof(Block));	
 	if (data == (void*)-1) 
 		return NULL; // sbrk failed
-			     //
 	// add block to the back of the list
 	
 	// fill out block fields
+	Block* block = (Block*)data;
 	block->size = size;
 	block->free = true;
 	block->next = NULL;
@@ -65,10 +65,9 @@ void* custom_malloc(size_t size) {
 
 	if (block_list) {
 		block = find_free_block(size);
-		if (!block) {
-			return NULL;
-		}
-	} else {
+	} 
+	
+	if (!block) {
 		block = create_block(size);
 		if (!block) {
 			// can't allocate memory
@@ -112,4 +111,17 @@ void* custom_calloc(size_t nelem, size_t elsize) {
 	void* pointer = custom_malloc(size);	
 	memset(pointer, 0, size);
 	return pointer;
+}
+
+
+void print_block_list() {
+	Block* block = block_list;
+	while (block) {
+		
+		printf("pointer: %p\n", block);
+		printf("size: %d\n", block->size);
+		printf("next: %p\n", block->next);
+		printf("free: %s\n", (block->free ? "true" : "false"));
+		block = block->next;
+	}
 }

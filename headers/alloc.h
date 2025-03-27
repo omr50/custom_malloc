@@ -36,5 +36,6 @@ void* custom_realloc(void* address, size_t size);
 // number of nelem = number of elements, elsize = size of each
 void* custom_calloc(size_t nelem, size_t elsize);
 // void* insert_block(size_t combined_size);
+void print_block_list();
 
 #endif
